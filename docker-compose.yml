@@ -1,0 +1,31 @@
+
+services:
+  ftp-server:
+    build: ./server
+    container_name: ftp-server
+    environment:
+      PUBLICHOST: "172.28.0.10"
+      FTP_USER_NAME: tarea
+      FTP_USER_PASS: tarea123
+      FTP_USER_HOME: /home/ftpusers/tarea
+    networks:
+      ftpnet:
+        ipv4_address: 172.28.0.10
+
+  ftp-client:
+    build: ./client
+    container_name: ftp-client
+    command: ["sleep", "infinity"]
+    depends_on:
+      - ftp-server
+    networks:
+      ftpnet:
+        ipv4_address: 172.28.0.20
+
+networks:
+  ftpnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
+
