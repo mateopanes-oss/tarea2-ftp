@@ -1,17 +1,18 @@
 #!/bin/sh
 set -eu
 
-# Comprobar las variables necesarias
 : "${FTP_USER_NAME:?Falta FTP_USER_NAME}"
 : "${FTP_USER_PASS:?Falta FTP_USER_PASS}"
 : "${FTP_USER_HOME:?Falta FTP_USER_HOME}"
 : "${PUBLICHOST:?Falta PUBLICHOST}"
 
-# Crear el directorio del usuario FTP
 mkdir -p "$FTP_USER_HOME"
 chown -R ftpuser:ftpgroup "$FTP_USER_HOME"
 
-# Crear la cuenta virtual de Pure-FTPd
+rm -f /etc/pure-ftpd/pureftpd.passwd \
+      /etc/pure-ftpd/pureftpd.pdb \
+      /etc/pure-ftpd/pureftpd.passwd.tmp
+
 printf '%s\n%s\n' "$FTP_USER_PASS" "$FTP_USER_PASS" |
     pure-pw useradd "$FTP_USER_NAME" \
         -f /etc/pure-ftpd/pureftpd.passwd \
